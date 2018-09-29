@@ -18,7 +18,7 @@ class matrix:
     def zero(self, dimx, dimy):
         # check if valid dimensions
         if dimx < 1 or dimy < 1:
-            raise ValueError, "Invalid size of matrix"
+            raise "Invalid size of matrix"
         else:
             self.dimx = dimx
             self.dimy = dimy
@@ -27,7 +27,7 @@ class matrix:
     def identity(self, dim):
         # check if valid dimension
         if dim < 1:
-            raise ValueError, "Invalid size of matrix"
+            raise "Invalid size of matrix"
         else:
             self.dimx = dim
             self.dimy = dim
@@ -43,7 +43,7 @@ class matrix:
     def __add__(self, other):
         # check if correct dimensions
         if self.dimx != other.dimx or self.dimy != other.dimy:
-            raise ValueError, "Matrices must be of equal dimensions to add"
+            raise "Matrices must be of equal dimensions to add"
         else:
             # add if correct dimensions
             res = matrix([[]])
@@ -56,7 +56,7 @@ class matrix:
     def __sub__(self, other):
         # check if correct dimensions
         if self.dimx != other.dimx or self.dimy != other.dimy:
-            raise ValueError, "Matrices must be of equal dimensions to subtract"
+            raise "Matrices must be of equal dimensions to subtract"
         else:
             # subtract if correct dimensions
             res = matrix([[]])
@@ -69,7 +69,7 @@ class matrix:
     def __mul__(self, other):
         # check if correct dimensions
         if self.dimy != other.dimx:
-            raise ValueError, "Matrices must be m*n and n*p to multiply"
+            raise "Matrices must be m*n and n*p to multiply"
         else:
             # multiply if correct dimensions
             res = matrix([[]])
@@ -104,7 +104,7 @@ class matrix:
                 res.value[i][i] = 0.0
             else:
                 if d < 0.0:
-                    raise ValueError, "Matrix not positive-definite"
+                    raise "Matrix not positive-definite"
                 res.value[i][i] = sqrt(d)
             for j in range(i+1, self.dimx):
                 S = sum([res.value[k][i] * res.value[k][j] for k in range(self.dimx)])
@@ -113,7 +113,7 @@ class matrix:
                 try:
                    res.value[i][j] = (self.value[i][j] - S)/res.value[i][i]
                 except:
-                   raise ValueError, "Zero diagonal"
+                   raise "Zero diagonal"
         return res
     
     def CholeskyInverse(self):
@@ -146,10 +146,18 @@ class matrix:
 
 def kalman_filter(x, P):
     for n in range(len(measurements)):
-        
+        print (measurements[n])
         # measurement update
-
+        Z = matrix([[measurements[n]]])
+        print (Z)
+        y = Z - (H * x)
+        S = H * P * H.transpose() + R
+        K = P * H.transpose() * S.inverse()
+        x = x + (K * y)
+        P = (I- (K * H)) * P        
         # prediction
+        x = (F * x ) + u
+        P = F * P * F.transpose()
         
     return x,P
 
